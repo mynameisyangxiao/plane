@@ -27,7 +27,13 @@
 			border-radius: 50%;
 			background-color: #444444;
 			position: absolute;
-			top: 50px;
+			bottom: 20px;
+			left: 0;
+			right: 0;
+			margin:auto;
+			cursor: pointer;
+			background-image: url("src/plane.png");
+			background-size: 100% 100%;
 		}
 		.bullet{
 			height: 14px;
@@ -39,10 +45,9 @@
 			width:70px;
 			height: 70px;
 			background-color: #333333;
-			position: absolute;
 			background-image: url("src/enemy_2.png");
 			background-size: 100% 100%;
-			border-radius: 50%;
+
 			left: 478px;
 			top:560px;
 		}
@@ -50,10 +55,10 @@
 			width: 60px;
 			height: 60px;
 			background-color: #999999;
-			position: absolute;
+
 			background-image: url("src/enemy_1.png");
 			background-size: 100% 100%;
-			border-radius: 50%;
+
 			left: 230px;
 			top: 50px;
 		}
@@ -63,10 +68,17 @@
 			left: 100px;
 			top: 200px;
 			background-color: #666666;
-			position: absolute;
+		
 			background-image: url("src/enemy_4.png");
+			
+		}
+		.plane{
 			background-size: 100% 100%;
-			border-radius: 50%;
+			
+			position: absolute;
+			min-height: 40px;
+			min-width: 40px;
+            border:1px solid #000000;
 		}
 	</style>
 </head>
@@ -76,6 +88,9 @@
     	<div id="self" v-drag>
     		
     	</div>
+    	<!-- <div id="p" class="plane" style="background-color: #ffffff" v-drag>
+    		
+    	</div> -->
        
     </div>
 	
@@ -88,18 +103,19 @@
     var max_left = 490;
     var plane_speed = 4;
 	var parent_div = document.getElementById("main_content");
+	var plane_self = document.getElementById("self");
 	var height = document.body.clientHeight;
 	
 	Vue.directive('drag', {
 	inserted:function(el){
         
 	    el.onmousedown=function(e){
-	    	console.log("按下时:el-->"+el.offsetLeft+"||"+el.offsetTop);
+	    	//console.log("按下时:el-->"+el.offsetLeft+"||"+el.offsetTop);
 	        let l=e.clientX-el.offsetLeft;
 	        let t=e.clientY-el.offsetTop;
-	        console.log("按下时:e-->"+l+"||"+t);
+	        //console.log("按下时:e-->"+l+"||"+t);
 	        document.onmousemove=function(e){
-                console.log("按下后移动:e-->"+e.clientX+"||"+e.clientY);
+                //console.log("按下后移动:e-->"+e.clientX+"||"+e.clientY);
                 var left = e.clientX-l;
                 var top = e.clientY-t;
                 if(left>=-22&&left<=532){
@@ -112,7 +128,7 @@
 
 	        };
 	        el.onmouseup=function(e){
-	        	console.log("停止时:-->"+e.clientX+"||"+e.clientY);
+	        	//console.log("停止时:-->"+e.clientX+"||"+e.clientY);
 	            document.onmousemove=null;
 	            el.onmouseup=null;
 	        }
@@ -121,14 +137,15 @@
 });
 
 window.onload = function(){
-    var launch_timer = setInterval(launch,launch_speed);
-    var bullet_timer = setInterval(bullet_move,17);
+    // var launch_timer = setInterval(launch,launch_speed);
+    // var bullet_timer = setInterval(bullet_move,17);
     var plane_timer =  setInterval(create_plane,300);
     var plane_move_timer = setInterval(plane_move,17);
+    //var AABB_TIMER = setInterval(AABB,10);
 };
 function bullet_move(){
     var bullets = document.getElementsByClassName("bullet");
-    console.log(bullets.length);
+    //console.log(bullets.length);
     for(var i= 0;i<bullets.length;i++){
 		 var bullet = bullets[i];
 		 var top = bullet.offsetTop;
@@ -152,7 +169,7 @@ function create_plane(){
 	  }else if(a==3){
          class_v="plane_monkey";
 	  }
-	  console.log("a==="+a+"||"+class_v);
+	  //console.log("a==="+a+"||"+class_v);
 　　　　//设置 div 属性，如 id
 
 　　　　div.setAttribute("class", class_v+" plane");
@@ -164,7 +181,7 @@ function create_plane(){
 function plane_move(){
 
 	var planes = document.getElementsByClassName("plane");
-	console.log(planes.length);
+	//console.log(planes.length);
 	for(var i= 0;i<planes.length;i++){
 		 var plane = planes[i];
 		 var top = plane.offsetTop;
@@ -173,6 +190,7 @@ function plane_move(){
          }else{
          	plane.style.top = (top+plane_speed)+'px';
          }
+         AABB_1(plane);
 	}
 
 }
@@ -208,19 +226,81 @@ function launch(){
 　　　　parent.appendChild(div);
      
 }
-
-	var self = new Vue({
+    var self = new Vue({
 		el:"#self",
 		data:{
 			name:"开始"
 		},
 		methods:{
 			vueTouch:function(n){
-              console.log(n);
+              //console.log(n);
 			}
 		}
 	});
 
+	// var p = new Vue({
+	// 	el:"#p",
+	// 	data:{
+	// 		name:"开始"
+	// 	},
+	// 	methods:{
+	// 		vueTouch:function(n){
+ //              console.log(n);
+	// 		}
+	// 	}
+	// });
+
+function AABB(){
+	var plane_self = document.getElementById("self");
+    var left = plane_self.offsetLeft;
+    var top = plane_self.offsetTop;
+    var planes = document.getElementsByClassName("plane");
+    for (var i = 0; i <planes.length; i++) {
+    	   var plane = planes[i];
+           var plane_left = plane.offsetLeft;
+           var plane_top = plane.offsetTop;
+           var plane_width = plane.clientWidth;
+           var plane_height = plane.clientHeight;
+
+           // console.log("left:"+left);
+           // console.log("top:"+top);
+           // console.log("plane_left:"+plane_left);
+           // console.log("plane_top:"+plane_top);
+           // console.log("plane_width:"+plane_width);
+           // console.log("plane_height:"+plane_height);
+           
+           //先过滤不同高度
+           if((plane_top+plane_height)>=top&&plane_top<=(top+50)){
+           	//console.log("在同一高度");
+              if((plane_left+plane_width)>=left&&plane_left<=(left+50)){
+                 console.log("碰撞");
+              }
+           }else{
+           	//console.log("不在同一高度");
+           }
+
+        }
+    }
+  function AABB_1(plane){
+    var plane_self = document.getElementById("self");
+    var left = plane_self.offsetLeft;
+    var top = plane_self.offsetTop;
+             var plane_left = plane.offsetLeft;
+           var plane_top = plane.offsetTop;
+           var plane_width = plane.clientWidth;
+           var plane_height = plane.clientHeight;
+           //先过滤不同高度
+           if((plane_top+plane_height)>=top&&plane_top<=(top+50)){
+           	//console.log("在同一高度");
+              if((plane_left+plane_width)>=left&&plane_left<=(left+50)){
+                 console.log("碰撞");
+                 parent_div.removeChild(plane);
+              }
+           }else{
+           	//console.log("不在同一高度");
+           }
+  
+     }
 </script>
 
 </body>
