@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>shanyuguo</title>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<style type="text/css">
+		body,html{
+			height: 100%;
+			height: 100%;
+			overflow: hidden;
+			padding: 0;
+			margin: 0;
+		}
+		#main_content{
+			width: 560px;
+			height: 100%;
+			max-width: 100%;
+			margin-right: auto;
+			margin-left: auto;
+			background-color: #f2f2f2;
+			position: relative;
+		}
+		#self{
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			background-color: #444444;
+			position: absolute;
+			top: 50px;
+		}
+		.bullet{
+			height: 14px;
+			width: 5px;
+			background-color: #444444;
+			position: absolute;
+		}
+		.plane_mao{
+			width:70px;
+			height: 70px;
+			background-color: #333333;
+			position: absolute;
+			background-image: url("src/enemy_2.png");
+			background-size: 100% 100%;
+			border-radius: 50%;
+			left: 478px;
+			top:560px;
+		}
+		.plane_monkey{
+			width: 60px;
+			height: 60px;
+			background-color: #999999;
+			position: absolute;
+			background-image: url("src/enemy_1.png");
+			background-size: 100% 100%;
+			border-radius: 50%;
+			left: 230px;
+			top: 50px;
+		}
+		.plane_dog{
+			width: 40px;
+			height: 40px;
+			left: 100px;
+			top: 200px;
+			background-color: #666666;
+			position: absolute;
+			background-image: url("src/enemy_4.png");
+			background-size: 100% 100%;
+			border-radius: 50%;
+		}
+	</style>
+</head>
+<body>
+    <div id="main_content">
+    	
+    	<div id="self" v-drag>
+    		
+    	</div>
+       
+    </div>
+	
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<script type="text/javascript">
+	var bullet_speed = 14;
+	var launch_speed = 150;
+	var min_left = 5;
+    var max_left = 490;
+    var plane_speed = 4;
+	var parent_div = document.getElementById("main_content");
+	var height = document.body.clientHeight;
+	
+	Vue.directive('drag', {
+	inserted:function(el){
+        
+	    el.onmousedown=function(e){
+	    	console.log("按下时:el-->"+el.offsetLeft+"||"+el.offsetTop);
+	        let l=e.clientX-el.offsetLeft;
+	        let t=e.clientY-el.offsetTop;
+	        console.log("按下时:e-->"+l+"||"+t);
+	        document.onmousemove=function(e){
+                console.log("按下后移动:e-->"+e.clientX+"||"+e.clientY);
+                var left = e.clientX-l;
+                var top = e.clientY-t;
+                if(left>=-22&&left<=532){
+                  el.style.left=left+'px';
+                }
+	            if(top>=0){
+                  el.style.top=top+'px';
+	            }
+	            
+
+	        };
+	        el.onmouseup=function(e){
+	        	console.log("停止时:-->"+e.clientX+"||"+e.clientY);
+	            document.onmousemove=null;
+	            el.onmouseup=null;
+	        }
+	    }
+	}
+});
+
+window.onload = function(){
+    var launch_timer = setInterval(launch,launch_speed);
+    var bullet_timer = setInterval(bullet_move,17);
+    var plane_timer =  setInterval(create_plane,300);
+    var plane_move_timer = setInterval(plane_move,17);
+};
+function bullet_move(){
+    var bullets = document.getElementsByClassName("bullet");
+    console.log(bullets.length);
+    for(var i= 0;i<bullets.length;i++){
+		 var bullet = bullets[i];
+		 var top = bullet.offsetTop;
+         if(top<0){
+          parent_div.removeChild(bullet);
+         }else{
+         	bullet.style.top = (top-bullet_speed)+'px';
+         }
+	}
+}
+
+function create_plane(){
+     var div = document.createElement("div");
+     var class_v = "plane_dog";
+     var a = getP();
+
+	 if(a==1){
+        
+	  }else if(a==2){
+         class_v="plane_mao";
+	  }else if(a==3){
+         class_v="plane_monkey";
+	  }
+	  console.log("a==="+a+"||"+class_v);
+　　　　//设置 div 属性，如 id
+
+　　　　div.setAttribute("class", class_v+" plane");
+     div.style.left = getLeft()+'px';
+     div.style.top = (1-71)+'px';
+     parent_div.appendChild(div);
+
+}
+function plane_move(){
+
+	var planes = document.getElementsByClassName("plane");
+	console.log(planes.length);
+	for(var i= 0;i<planes.length;i++){
+		 var plane = planes[i];
+		 var top = plane.offsetTop;
+         if(top>height){
+          parent_div.removeChild(plane);
+         }else{
+         	plane.style.top = (top+plane_speed)+'px';
+         }
+	}
+
+}
+function getLeft(){
+	var a = Math.floor(Math.random()*1000+25);
+	if(a>max_left){
+      return getLeft();
+	}else{
+		return a;
+	}
+}
+function getP(){
+	var a = Math.floor(Math.random()*10+1);
+	if(a>3){
+      return getP();
+	}else{
+		return a;
+	}
+}
+function launch(){
+	var el = document.getElementById("self");
+    var left = el.offsetLeft+22.5;
+    var top = el.offsetTop-16;
+    var parent = document.getElementById("main_content");
+     
+　　　　//添加 div
+　　　　var div = document.createElement("div");
+
+　　　　//设置 div 属性，如 id
+　　　　div.setAttribute("class", "bullet");
+     div.style.left = left+'px';
+     div.style.top = top+'px';
+　　　　parent.appendChild(div);
+     
+}
+
+	var self = new Vue({
+		el:"#self",
+		data:{
+			name:"开始"
+		},
+		methods:{
+			vueTouch:function(n){
+              console.log(n);
+			}
+		}
+	});
+
+</script>
+
+</body>
