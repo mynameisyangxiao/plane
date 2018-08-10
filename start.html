@@ -3,10 +3,7 @@
 <head>
 	<title>shanyuguo</title>
     <meta charset="UTF-8">
-	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">     
-<meta content="yes" name="apple-mobile-web-app-capable">     
-<meta content="black" name="apple-mobile-web-app-status-bar-style">     
-<meta content="telephone=no" name="format-detection">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 	<style type="text/css">
 		body,html{
 			height: 100%;
@@ -21,7 +18,7 @@
 			max-width: 100%;
 			margin-right: auto;
 			margin-left: auto;
-			background-color: #444444;
+			background-color: #f2f2f2;
 			position: relative;
 		}
 		#self{
@@ -31,7 +28,7 @@
 			background-color: #444444;
 			position: absolute;
 			bottom: 20px;
-		    z-index: 5;
+
 			cursor: pointer;
 			background-image: url("src/plane.png");
 			background-size: 100% 100%;
@@ -39,9 +36,8 @@
 		.bullet{
 			height: 14px;
 			width: 5px;
-			background-color: #ffffff;
+			background-color: #444444;
 			position: absolute;
-			z-index: 5;
 		}
 		.plane_mao{
 			width:70px;
@@ -52,7 +48,6 @@
 
 			left: 478px;
 			top:560px;
-			z-index: 5;
 		}
 		.plane_monkey{
 			width: 60px;
@@ -64,7 +59,6 @@
 
 			left: 230px;
 			top: 50px;
-			z-index: 5;
 		}
 		.plane_dog{
 			width: 40px;
@@ -72,7 +66,7 @@
 			left: 100px;
 			top: 200px;
 			background-color: #666666;
-		    z-index: 5;
+		
 			background-image: url("src/enemy_4.png");
 			
 		}
@@ -84,95 +78,12 @@
 			min-width: 40px;
             border:1px solid #000000;
 		}
-		.diePlane1{
-			background-size: 100% 100%;
-			
-			position: absolute;
-			min-height: 40px;
-			min-width: 40px;
-			z-index: 5;
-            background-image: url("src/explode_1.png");
-            opacity: 0.8;
-		}
-		.diePlane2{
-			background-size: 100% 100%;
-			z-index: 5;
-			position: absolute;
-			min-height: 40px;
-			min-width: 40px;
-            background-image: url("src/explode_2.png");
-            opacity: 0.5;
-		}
-		.diePlane3{
-			z-index: 5;
-			background-size: 100% 100%;
-			position: absolute;
-			min-height: 40px;
-			min-width: 40px;
-            background-image: url("src/explode_3.png");
-            opacity: 0.2;
-		
-		}
-		#score{
-			width: 100px;
-			height: 50px;
-			color: #ffffff;
-			line-height: 50px;
-            font-family: SimHei;
-            position: absolute;
-            right: 0;
-            z-index: 5;
-            top: 0;
-            text-align: center;
-		}
-		#gameover{
-			width: 100%;
-			height: 100%;
-			left: 0;
-			top: 0;
-			z-index: 999;
-			display: none;
-            position: relative;
-		}
-		#gameover #bg{
-			width: 100%;
-			height: 100%;
-			
-			background-color: #ffffff;
-			opacity: 0.7;
-			z-index: 998;
-		}
-		#gameover #g{
-			background-color: #F2C81F;
-			font-size: 18px;
-			width: 100px;
-			height: 35px;
-			line-height: 35px;
-			color: #ffffff;
-			position: absolute;
-			text-align: center;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			z-index: 999;
-		    margin: auto;
-            border-radius: 8px;
-            cursor: pointer;
-		}
 	</style>
 </head>
 <body>
     <div id="main_content">
-    	<div id="gameover">
-    		<div id="bg"></div>
-            
-    		<div id="g" onclick="javascript:location.reload();"><span>再来一次</span></div>
-    	</div>
-    	<div id="score">
-    		<span id="ss">0</span>
-    	</div>
-    	<div id="self" v-drag >
+    	
+    	<div id="self" v-drag>
     		
     	</div>
     	<!-- <div id="p" class="plane" style="background-color: #ffffff" v-drag>
@@ -184,46 +95,15 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 
 <script type="text/javascript">
-// var overscroll = function(el) {
-//     el.addEventListener('touchstart', function() {
-//         var top = el.scrollTop
-//         ,totalScroll = el.scrollHeight
-//         ,currentScroll = top + el.offsetHeight;
-//         if(top === 0) {
-//             el.scrollTop = 1;
-//         }else if(currentScroll === totalScroll) {
-//             el.scrollTop = top - 1;
-//         }
-//     });
- 
-//     el.addEventListener('touchmove', function(evt) {
-//     if(el.offsetHeight < el.scrollHeight)
-//         evt._isScroller = true;
-//     });
-// }
-        
-// overscroll(document.querySelector('.scroll'));
-// document.body.addEventListener('touchmove', function(evt) {
-//     if(!evt._isScroller) {
-//         evt.preventDefault();
-//     }
-  document.querySelector('body').addEventListener('touchstart', function (ev) {
-	ev.preventDefault();
-});
 	var bullet_speed = 14;
-	var launch_speed = 300;
+	var launch_speed = 150;
 	var min_left = 5;
     var max_left = 490;
     var plane_speed = 4;
 	var parent_div = document.getElementById("main_content");
 	var plane_self = document.getElementById("self");
-	var height = parent_div.clientHeight;
-	var width = parent_div.clientWidth;
-	var launch_timer ;
-	var bullet_timer;
-	var plane_timer;
-	var plane_move_timer;
-	var score = 0;
+	var height = document.body.clientHeight;
+	
 	Vue.directive('drag', {
 	inserted:function(el){
         
@@ -254,39 +134,11 @@
 	}
 });
 
-
 window.onload = function(){
-	     
-	     var s = document.getElementById("self");
-	     s.style.left= "200px";
-	     s.addEventListener('touchstart', function(event){
-	     	var el = this;
-            var touch = event.targetTouches[0];
-            startX = touch.pageX;
-            startY = touch.pageY;
-            console.log(startX+"|"+startY);
-            s.style.left = (startX-25)+'px';
-            s.style.top = (startY-25)+'px';
-	     }, false);
-	     s.addEventListener('touchmove', function(event){
-	     	var el = this;
-            var touch = event.targetTouches[0];
-            endX = touch.pageX;
-            endY = touch.pageY;
-            console.log(endX+"|"+endY);
-            s.style.left = (endX-25)+'px';
-            s.style.top = (endY-25)+'px';
-	     }, true);
-	     s.addEventListener('touchend', function(e){
-	     	var el = this;
-            
-            console.log("移动");
-	     }, false);
-	
-    launch_timer = setInterval(launch,launch_speed);
-    bullet_timer = setInterval(bullet_move,17);
-    plane_timer =  setInterval(create_plane,300);
-    plane_move_timer = setInterval(plane_move,17);
+    // var launch_timer = setInterval(launch,launch_speed);
+    // var bullet_timer = setInterval(bullet_move,17);
+    var plane_timer =  setInterval(create_plane,300);
+    var plane_move_timer = setInterval(plane_move,17);
     //var AABB_TIMER = setInterval(AABB,10);
 };
 function bullet_move(){
@@ -300,7 +152,6 @@ function bullet_move(){
          }else{
          	bullet.style.top = (top-bullet_speed)+'px';
          }
-         AABB_2(bullet);
 	}
 }
 
@@ -343,7 +194,7 @@ function plane_move(){
 }
 function getLeft(){
 	var a = Math.floor(Math.random()*1000+25);
-	if(a>width){
+	if(a>max_left){
       return getLeft();
 	}else{
 		return a;
@@ -358,7 +209,6 @@ function getP(){
 	}
 }
 function launch(){
-	console.log("asd");
 	var el = document.getElementById("self");
     var left = el.offsetLeft+22.5;
     var top = el.offsetTop-16;
@@ -371,7 +221,6 @@ function launch(){
 　　　　div.setAttribute("class", "bullet");
      div.style.left = left+'px';
      div.style.top = top+'px';
-
 　　　　parent.appendChild(div);
      
 }
@@ -443,85 +292,13 @@ function AABB(){
            	//console.log("在同一高度");
               if((plane_left+plane_width)>=left&&plane_left<=(left+50)){
                  console.log("碰撞");
-                 //parent_div.removeChild(plane);
-                 self_die(plane_self);
+                 parent_div.removeChild(plane);
               }
            }else{
            	//console.log("不在同一高度");
            }
   
      }
-  function AABB_2(bullet){
-      
-
-    var left = bullet.offsetLeft;
-    var top = bullet.offsetTop;
-    var planes = document.getElementsByClassName("plane");
-    for (var i = 0; i <planes.length; i++) {
-    	   var plane = planes[i];
-           var plane_left = plane.offsetLeft;
-           var plane_top = plane.offsetTop;
-           var plane_width = plane.clientWidth;
-           var plane_height = plane.clientHeight;
-
-           // console.log("left:"+left);
-           // console.log("top:"+top);
-           // console.log("plane_left:"+plane_left);
-           // console.log("plane_top:"+plane_top);
-           // console.log("plane_width:"+plane_width);
-           // console.log("plane_height:"+plane_height);
-           
-           //先过滤不同高度
-           if((plane_top+plane_height)>=top&&plane_top<=(top+14)){
-           	//console.log("在同一高度");
-              if((plane_left+plane_width)>=left&&plane_left<=(left+5)){
-                 parent_div.removeChild(bullet);
-                 plane_die(plane);
-                 
-              }
-           }else{
-           	//console.log("不在同一高度");
-           }
-
-        }
-  }
-  function plane_die(plane){
-    uScore();
-    plane.setAttribute("class", "diePlane1"); 
-    setTimeout(function(){
-    plane.setAttribute("class", "diePlane2");
-    },200);
-    setTimeout(function(){
-    plane.setAttribute("class", "diePlane3");
-    },200);
-    setTimeout(function(){
-    parent_div.removeChild(plane);
-    },200);
-  }
-  function self_die(plane){
-    plane.setAttribute("class", "diePlane1");
-    setTimeout(function(){
-    plane.setAttribute("class", "diePlane2");
-    },200);
-    setTimeout(function(){
-    gameover(plane);
-    },200);
-  }
-  function gameover(plane){
-       plane.style.display = 'none';
-       clearTimeout(launch_timer);
-       clearTimeout(bullet_timer);
-       clearTimeout(plane_timer);
-	   clearTimeout(plane_move_timer);
-	   var g = document.getElementById("gameover");
-       g.style.display='block';
-  }
-  function uScore(){
-  	score += 5;
-    var ss= document.getElementById("ss");
-
-    ss.innerText = score+'';
-  }
 </script>
 
 </body>
